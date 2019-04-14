@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using OData.Data;
 using OData.Domain;
@@ -28,6 +29,7 @@ namespace OData.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [EnableQuery()]
         public async Task<ActionResult<Developer>> Get(int id)
         {
             var developer = await _context.Developer.FindAsync(id);
@@ -36,6 +38,7 @@ namespace OData.Controllers
         }
 
         [HttpGet]
+        [EnableQuery()]
         public IEnumerable<Developer> Get() => _context.Developer.AsQueryable();
 
     }
