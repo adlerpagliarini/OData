@@ -26,6 +26,7 @@ namespace OData
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // 1. Add o Data service
             services.AddOData();
         }
 
@@ -43,17 +44,18 @@ namespace OData
             app.UseHttpsRedirection();
             app.UseMvc(routerBuilder =>
             {
+                // 2. Enable Dependency Injection on current routes
                 routerBuilder.EnableDependencyInjection(builder =>
-                    {
-                        var modelConfig = ODataEntitiesConfiguration.GetEdmModel(app.ApplicationServices);
-                        builder
-                        .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(IEdmModel), sp => modelConfig)
-                        .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(ODataUriResolver), sp => new StringAsEnumResolver())
-                        .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(ODataUriResolver), sp => new UnqualifiedCallAndEnumPrefixFreeResolver { EnableCaseInsensitive = true });
-                    });
-                
-                // Enables OData to all entities
-                //routerBuilder.Select().Filter().OrderBy().Count().Expand();
+                {
+                    var modelConfig = ODataEntitiesConfiguration.GetEdmModel(app.ApplicationServices);
+                    builder
+                    .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(IEdmModel), sp => modelConfig)
+                    .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(ODataUriResolver), sp => new StringAsEnumResolver())
+                    .AddService(Microsoft.OData.ServiceLifetime.Singleton, typeof(ODataUriResolver), sp => new UnqualifiedCallAndEnumPrefixFreeResolver { EnableCaseInsensitive = true });
+                });
+
+                // 3. Enable OData operations for all entities
+                //routerBuilder.Select().Filter().OrderBy().Expand().MaxTop(null);
             });
         }
     }

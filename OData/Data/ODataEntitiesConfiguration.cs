@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.OData.Edm;
 using OData.Domain;
 using System;
@@ -12,23 +13,20 @@ namespace OData.Data
             var builder = new ODataConventionModelBuilder(provider);
 
             builder.EntitySet<Developer>(nameof(Developer)).EntityType
-                   //.Expand(SelectExpandType.Automatic)
-                   .Expand()
                    .Filter()
-                   .Count()
                    .OrderBy()
+                   .Count()
                    .Page()
-                   .Select();
-                   // Enables Select for TaskToDo IF it isn't configured
-                   // .HasMany(t => t.TasksToDo).Select();
+                   .Select()
+                   .Expand();
+                    // .Expand(SelectExpandType.Automatic)
+                    // Enables Select for TaskToDo IF it isn't configured
+                    // .HasMany(t => t.TasksToDo).Select();
 
             builder.EntitySet<TaskToDo>(nameof(TaskToDo)).EntityType
-                   //.Expand(SelectExpandType.Automatic)
                    .Expand()
                    .Filter()
-                   .Count()
                    .OrderBy()
-                   .Page()
                    .Select();
 
             return builder.GetEdmModel();
